@@ -4,18 +4,27 @@ from users.models import *
 from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.pagination import PageNumberPagination
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
+from django_filters import FilterSet, DateFilter, NumberFilter
 
 
 class ProductsViewSet(viewsets.ModelViewSet):
     queryset = Products.objects.all()
     serializer_class = Productserializer
-    authentication_classes = [JWTAuthentication]
+    pagination_class = None
+    filter_backends = [DjangoFilterBackend,
+                       filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['category']
+    search_fields = ['^title']
+    ordering_fields = ['id', 'title']
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    authentication_classes = [JWTAuthentication]
+    pagination_class = None
 
 
 class OrderViewSet(viewsets.ModelViewSet):
